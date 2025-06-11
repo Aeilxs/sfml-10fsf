@@ -19,5 +19,13 @@ add_executable(main
 
 target_include_directories(main PRIVATE ${CMAKE_SOURCE_DIR}/include)
 
+set(ASSETS_SRC_DIR ${CMAKE_SOURCE_DIR}/assets)
+set(ASSETS_DST_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets)
+
+add_custom_command(TARGET main POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${ASSETS_SRC_DIR} ${ASSETS_DST_DIR}
+)
+
+
 target_compile_features(main PRIVATE cxx_std_17)
 target_link_libraries(main PRIVATE SFML::Graphics)
