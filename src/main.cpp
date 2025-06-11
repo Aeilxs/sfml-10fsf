@@ -1,16 +1,17 @@
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
-int main()
-{
-    auto window = sf::RenderWindow(sf::VideoMode({1920u, 1080u}), "CMake SFML Project");
-    window.setFramerateLimit(144);
+#include "App.hpp"
+#include "config.hpp"
 
-    while (window.isOpen())
-    {
-        while (const std::optional event = window.pollEvent())
-        {
-            if (event->is<sf::Event::Closed>())
-            {
+int main() {
+    App app;
+    auto window = sf::RenderWindow(sf::VideoMode(Config::WINDOW_SIZE), Config::WINDOW_TITLE);
+    window.setFramerateLimit(Config::TARGET_FPS);
+
+    while (window.isOpen()) {
+        while (const std::optional event = window.pollEvent()) {
+            if (event->is<sf::Event::Closed>()) {
                 window.close();
             }
         }
