@@ -30,27 +30,26 @@ class GameScreen : public Screen {
     void update(f32 dt) override;
     void draw() override;
 
+    void reset();
+
    private:
-    // === DATA ===
     GameState gstate;
     std::vector<std::string> words;
-    sf::RectangleShape wordBox;  // pour éviter de le recréer à chaque frame
+    sf::RectangleShape wordBox;
 
-    // === CORE ===
+    void saveGameStateToCSV();
+
     std::string pickRandomWord();
     void loadWords();
     void initWordsBuffer();
 
-    // === EVENTS ===
     void handleEscape(const sf::Event& event);
     void handleTyping(const sf::Event& event);
     void updateLetterStats(char typedChar);
 
-    // === UPDATE ===
     void updateTimer(f32 dt);
     void checkWordCompletion();
 
-    // === DRAW ===
     void drawWordBox();
     void drawWords();
     void drawInputBox();

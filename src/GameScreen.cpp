@@ -8,6 +8,11 @@ GameScreen::GameScreen(Context& ctx) : Screen(ctx) {
     initWordsBuffer();
 }
 
+void GameScreen::reset() {
+    gstate = GameState{};
+    initWordsBuffer();
+}
+
 void GameScreen::loadWords() {
     std::ifstream file(Config::WORDS_FILE_PATH);
     if (!file) {
@@ -79,7 +84,9 @@ void GameScreen::updateLetterStats(char typedChar) {
 }
 
 void GameScreen::update(f32 dt) {
-    if (gstate.isFinished) return;
+    if (gstate.isFinished) {
+        ctx.state = State::GameOver;
+    }
 
     updateTimer(dt);
     checkWordCompletion();
@@ -89,6 +96,7 @@ void GameScreen::updateTimer(f32 dt) {
     gstate.timeElapsed += dt;
     if (gstate.timeElapsed >= Config::GAME_DURATION_SECONDS) {
         gstate.isFinished = true;
+        saveGameStateToCSV();
         ctx.state = State::GameOver;
     }
 }
@@ -191,4 +199,25 @@ void GameScreen::drawStats() {
                   30);
     time.setPosition({300, 50});
     ctx.window.draw(time);
+}
+
+void GameScreen::saveGameStateToCSV() {
+    std::ofstream file(Config::SAVES_FILE_PATH, std::ios::app);
+    if (!file) {
+        std::cerr << "Error - can't open: " << Config::SAVES_FILE_PATH << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    // if empty
+    file.seekp(0, std::ios::end);
+    if (file.tellp() == 0) {
+        file << "WordsTyped,TotalTypedWords,LettersTyped,CorrectLettersTyped,"
+                "IncorrectLettersTyped,BackspacesUsed,MaxCombo,TimeElapsed\n";
+    }
+
+    file << gstate.wordsTyped << "," << gstate.totalTypedWords << "," << gstate.lettersTyped << ","
+         << gstate.correctLettersTyped << "," << gstate.incorrectLettersTyped << ","
+         << gstate.backspacesUsed << "," << gstate.maxCombo << "," << gstate.timeElapsed << "\n";
+
+    file.close();
 }
