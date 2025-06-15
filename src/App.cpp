@@ -25,19 +25,22 @@ void App::run() {
         f32 dt = clock.restart().asSeconds();
         this->pollEvents();
         ctx.window.clear();
-        // Après pollEvents et AVANT update/draw
         switch (ctx.state) {
             case State::Menu:
                 currentScreen = &menuScreen;
                 break;
             case State::Playing:
+                if (currentScreen != &gameScreen) {
+                    gameScreen.reset();
+                }
                 currentScreen = &gameScreen;
                 break;
+
             case State::Scores:
                 currentScreen = &scoresScreen;
                 break;
             case State::GameOver:
-                // TODO plus tard
+                currentScreen = &scoresScreen;
                 break;
         }
 
