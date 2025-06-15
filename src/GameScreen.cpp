@@ -17,7 +17,7 @@ GameScreen::GameScreen(Context& ctx) : Screen(ctx) {
     file.close();
 
     gstate.currentWord = pickRandomWord();
-    for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < 30; ++i) {
         gstate.nextWords.push_back(pickRandomWord());
     }
 }
@@ -51,14 +51,12 @@ void GameScreen::handleEvent(const sf::Event& event) {
 void GameScreen::update(f32 dt) {
     if (gstate.isFinished) return;
 
-    // Timer
     gstate.timeElapsed += dt;
     if (gstate.timeElapsed >= Config::GAME_DURATION_SECONDS) {
         gstate.isFinished = true;
         ctx.state = State::GameOver;
     }
 
-    // auto-advance
     if (gstate.userInput == gstate.currentWord) {
         gstate.wordsTyped++;
         gstate.currentWord = gstate.nextWords.front();
@@ -69,19 +67,26 @@ void GameScreen::update(f32 dt) {
 }
 
 void GameScreen::draw() {
-    f32 y = Config::WINDOW_HEIGHT / 2;
-    f32 spacing = 25.0f;
+    // === BOX ===
+    sf::RectangleShape wordBox;
+    wordBox.setSize({Config::WINDOW_WIDTH * 0.8f, Config::WINDOW_HEIGHT * 0.4f});
+    wordBox.setFillColor(sf::Color(50, 50, 50));
+    wordBox.setOutlineThickness(2.f);
+    wordBox.setOutlineColor(sf::Color::White);
+    wordBox.setOrigin(wordBox.getSize() / 2.f);
+    wordBox.setPosition({Config::WINDOW_WIDTH / 2.f, Config::WINDOW_HEIGHT / 2.f - 50});
+    ctx.window.draw(wordBox);
 
-    f32 fontSize = 50.f;
-    f32 letterSpacing = fontSize / 2;
-    f32 wordWidth = letterSpacing * gstate.currentWord.size();
-    f32 x = (Config::WINDOW_WIDTH / 5) - (wordWidth / 2);
+    // === AFFICHER MOTS DANS LA BOX ===
+    f32 margin = 20.f;
+    f32 x = wordBox.getPosition().x - wordBox.getSize().x / 2.f + margin;
+    f32 y = wordBox.getPosition().y - wordBox.getSize().y / 2.f + margin;
+    f32 maxWidth = wordBox.getSize().x - margin * 2.f;
 
+    // Mot courant (lettre par lettre)
     for (size_t i = 0; i < gstate.currentWord.size(); ++i) {
         char c = gstate.currentWord[i];
-        sf::Text letter(ctx.fontBold, std::string(1, c), fontSize);
-        letter.setPosition({x + i * letterSpacing, y});
-
+        sf::Text letter(ctx.fontBold, std::string(1, c), 40);
         if (i < gstate.userInput.size()) {
             if (gstate.userInput[i] == c) {
                 letter.setFillColor(sf::Color::Green);
@@ -89,24 +94,51 @@ void GameScreen::draw() {
                 letter.setFillColor(sf::Color::Red);
             }
         } else {
-            letter.setFillColor(sf::Color(150, 150, 150));
+            letter.setFillColor(sf::Color(200, 200, 200));
+        }
+        letter.setPosition({x, y});
+        ctx.window.draw(letter);
+
+        x += letter.getLocalBounds().size.x + 5.f;
+    }
+
+    // Mots suivants, retour à la ligne si trop long
+    x += 20.f;  // petit espace après le mot courant
+    for (const auto& word : gstate.nextWords) {
+        sf::Text wordText(ctx.fontRegular, word, 40);
+        wordText.setFillColor(sf::Color::White);
+        wordText.setPosition({x, y});
+
+        if (x + wordText.getLocalBounds().size.x >=
+            wordBox.getPosition().x + wordBox.getSize().x / 2.f - margin) {
+            // retour à la ligne
+            x = wordBox.getPosition().x - wordBox.getSize().x / 2.f + margin;
+            y += wordText.getLocalBounds().size.y + 10.f;
+            wordText.setPosition({x, y});
         }
 
-        ctx.window.draw(letter);
-    }
-
-    f32 nextX = (Config::WINDOW_WIDTH / 5) + (wordWidth / 2) + spacing;
-
-    for (const auto& w : gstate.nextWords) {
-        sf::Text wordText(ctx.fontRegular, w, 50);
-        wordText.setFillColor(sf::Color::White);
-        wordText.setPosition({nextX, y});
-
         ctx.window.draw(wordText);
-
-        nextX += wordText.getLocalBounds().size.x + spacing;
+        x += wordText.getLocalBounds().size.x + 20.f;
     }
 
+    // === INPUT BOX ===
+    sf::RectangleShape inputBox;
+    inputBox.setSize({wordBox.getSize().x, 60.f});
+    inputBox.setFillColor(sf::Color(30, 30, 30));
+    inputBox.setOutlineThickness(2.f);
+    inputBox.setOutlineColor(sf::Color::White);
+    inputBox.setOrigin({inputBox.getSize().x / 2.f, 0.f});
+    inputBox.setPosition(
+        {wordBox.getPosition().x, wordBox.getPosition().y + wordBox.getSize().y / 2.f + 20.f});
+    ctx.window.draw(inputBox);
+
+    sf::Text inputText(ctx.fontRegular, gstate.userInput, 40);
+    inputText.setFillColor(sf::Color::White);
+    inputText.setPosition({inputBox.getPosition().x - inputBox.getSize().x / 2.f + 10.f,
+                           inputBox.getPosition().y + 10.f});
+    ctx.window.draw(inputText);
+
+    // === SCORE & TEMPS ===
     sf::Text score(ctx.fontRegular, "Score: " + std::to_string(gstate.wordsTyped), 30);
     score.setPosition({100, 50});
     ctx.window.draw(score);
