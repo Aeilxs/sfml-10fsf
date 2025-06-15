@@ -1,9 +1,11 @@
 #pragma once
+
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <cstdint>
 #include <iostream>
 
+using u8 = char;
 using f32 = float;
 using f64 = double;
 using i32 = std::int32_t;
