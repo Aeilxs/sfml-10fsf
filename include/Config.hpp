@@ -19,6 +19,8 @@ constexpr sf::Vector2u WINDOW_SIZE = {WINDOW_WIDTH, WINDOW_HEIGHT};
 
 constexpr const char* WINDOW_TITLE = "10 Fast Fingers";
 
+constexpr const char* WORDS_FILE_PATH = "assets/words/english.txt";
+
 constexpr f32 GAME_DURATION_SECONDS = 60.0f;
 constexpr u32 TARGET_FPS = 144;
 
