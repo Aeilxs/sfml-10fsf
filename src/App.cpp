@@ -37,9 +37,11 @@ void App::run() {
                 break;
 
             case State::Scores:
+                scoresScreen.loadSaves();
                 currentScreen = &scoresScreen;
                 break;
             case State::GameOver:
+                ctx.needReload = true;
                 currentScreen = &scoresScreen;
                 break;
         }

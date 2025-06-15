@@ -15,6 +15,8 @@ struct Context {
     State state = State::Menu;
     std::mt19937 rng;
 
+    bool needReload = true;
+
     Context()
         : window(sf::VideoMode(Config::WINDOW_SIZE), Config::WINDOW_TITLE),
           fontBold(sf::Font("assets/fonts/UbuntuMonoNerdFont-Bold.ttf")),

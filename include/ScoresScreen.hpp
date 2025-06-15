@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GameScreen.hpp"
 #include "Screen.hpp"
 
 class ScoresScreen : public Screen {
@@ -11,5 +12,9 @@ class ScoresScreen : public Screen {
     void update(f32 dt) override;
     void draw() override;
 
+    void loadSaves();
+
    private:
+    std::vector<GameState> saves;
+    u32 index = 0;
 };
