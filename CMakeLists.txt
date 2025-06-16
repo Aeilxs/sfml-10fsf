@@ -14,6 +14,10 @@ FetchContent_MakeAvailable(SFML)
 
 add_executable(main 
     src/App.cpp
+    src/MenuScreen.cpp
+    src/GameScreen.cpp
+    src/ScoresScreen.cpp
+
     src/main.cpp
 )
 

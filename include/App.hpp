@@ -1,14 +1,26 @@
 #pragma once
-enum class State { Idle, Pending, Finished };
+
+#include "App.hpp"
+#include "Context.hpp"
+#include "GameScreen.hpp"
+#include "MenuScreen.hpp"
+#include "ScoresScreen.hpp"
+#include "Screen.hpp"
 
 class App {
    public:
-    App();
+    App(Context& ctx);
     ~App();
 
-    State getState() const;
-    void setState(State s);
+    void run();
 
    private:
-    State state = State::Idle;
+    Context& ctx;
+
+    void pollEvents();
+
+    Screen* currentScreen;
+    MenuScreen menuScreen;
+    GameScreen gameScreen;
+    ScoresScreen scoresScreen;
 };

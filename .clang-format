@@ -3,10 +3,9 @@ IndentWidth: 4
 TabWidth: 4
 UseTab: Never
 BreakBeforeBraces: Attach
-# AllowShortFunctionsOnASingleLine: false
 AllowShortIfStatementsOnASingleLine: true
 AllowShortLoopsOnASingleLine: false
-AllowShortCaseLabelsOnASingleLine: true
+AllowShortCaseLabelsOnASingleLine: false
 ColumnLimit: 100
 AlignTrailingComments: true
 SpaceBeforeParens: ControlStatements
@@ -15,5 +14,14 @@ SpacesInSquareBrackets: false
 SpacesInAngles: false
 SpaceInEmptyParentheses: false
 IndentCaseLabels: true
+IncludeCategories:
+  - Regex: '^"'
+    Priority: 1
+  - Regex: '^<SFML'
+    Priority: 2
+  - Regex: '^<'
+    Priority: 3
+IncludeBlocks: Merge
 SortIncludes: true
+
 AlwaysBreakBeforeMultilineStrings: true
