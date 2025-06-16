@@ -1,7 +1,7 @@
 # SFML Project
 
 Small C++ game using [SFML 3.0](https://www.sfml-dev.org/).
-(Copy of this [game](https://10fastfingers.com/typing-test/english))
+Copy of this [game (10 fast fingers)](https://10fastfingers.com/typing-test/english)
 
 ## Build
 
